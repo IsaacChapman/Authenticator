@@ -195,7 +195,13 @@ extension Root {
         }
     }
 
-    mutating func updateWithPersistentTokens(persistentTokens: [PersistentToken]) {
-        tokenList.updateWithPersistentTokens(persistentTokens)
+    mutating func updateWithPersistentTokens(persistentTokens: [PersistentToken]) -> Effect? {
+        let action: TokenList.Action = .UpdateTokenList(persistentTokens)
+        let effect = tokenList.update(action)
+        // Handle the resulting action after committing the changes of the initial action
+        if let effect = effect {
+            return handleTokenListEffect(effect)
+        }
+        return nil
     }
 }

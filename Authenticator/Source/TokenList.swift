@@ -37,10 +37,6 @@ struct TokenList: Component {
         ephemeralMessage = nil
     }
 
-    mutating func updateWithPersistentTokens(persistentTokens: [PersistentToken]) {
-        self.persistentTokens = persistentTokens
-    }
-
     // MARK: View Model
 
     var viewModel: TokenListViewModel {
@@ -67,6 +63,8 @@ struct TokenList: Component {
 
 extension TokenList {
     enum Action: Equatable {
+        case UpdateTokenList([PersistentToken])
+
         case BeginAddToken
         case EditPersistentToken(PersistentToken)
 
@@ -94,6 +92,10 @@ extension TokenList {
         resetEphemera()
 
         switch action {
+        case .UpdateTokenList(let persistentTokens):
+            self.persistentTokens = persistentTokens
+            return nil
+
         case .BeginAddToken:
             return .BeginTokenEntry
         case .EditPersistentToken(let persistentToken):
@@ -132,6 +134,10 @@ extension TokenList {
 
 func == (lhs: TokenList.Action, rhs: TokenList.Action) -> Bool {
     switch lhs {
+    case let .UpdateTokenList(l):
+        if case let .UpdateTokenList(r) = rhs {
+            return l == r
+        }
     case .BeginAddToken:
         return rhs == .BeginAddToken
     case let .EditPersistentToken(l):
