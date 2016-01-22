@@ -91,11 +91,7 @@ extension Root {
     mutating func update(action: Action) -> Effect? {
         switch action {
         case .TokenListAction(let action):
-            let effect = tokenList.update(action)
-            // Handle the resulting action after committing the changes of the initial action
-            if let effect = effect {
-                return handleTokenListEffect(effect)
-            }
+            return handleTokenListAction(action)
 
         case .TokenEntryFormAction(let action):
             if case .EntryForm(let form) = modal {
@@ -123,6 +119,16 @@ extension Root {
             return handleTokenScannerEffect(effect)
         }
         return nil
+    }
+
+    @warn_unused_result
+    private mutating func handleTokenListAction(action: TokenList.Action) -> Effect? {
+        let effect = tokenList.update(action)
+        if let effect = effect {
+            return handleTokenListEffect(effect)
+        } else {
+            return nil
+        }
     }
 
     @warn_unused_result
@@ -197,11 +203,6 @@ extension Root {
 
     mutating func updateWithPersistentTokens(persistentTokens: [PersistentToken]) -> Effect? {
         let action: TokenList.Action = .UpdateTokenList(persistentTokens)
-        let effect = tokenList.update(action)
-        // Handle the resulting action after committing the changes of the initial action
-        if let effect = effect {
-            return handleTokenListEffect(effect)
-        }
-        return nil
+        return handleTokenListAction(action)
     }
 }
