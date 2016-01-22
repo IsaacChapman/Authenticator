@@ -73,7 +73,9 @@ class AppController {
         case .DeletePersistentToken(let persistentToken):
             store.deletePersistentToken(persistentToken)
         }
-        component.updateWithPersistentTokens(store.persistentTokens)
+        // Send an additional action to the root component with the updated data from the store
+        let updateAction: Root.Action = .UpdateTokenList(store.persistentTokens)
+        handleAction(updateAction)
     }
 
     // MARK: - Public

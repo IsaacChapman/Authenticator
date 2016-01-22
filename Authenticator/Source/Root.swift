@@ -72,6 +72,8 @@ extension Root {
 
 extension Root {
     enum Action {
+        case UpdateTokenList([PersistentToken])
+
         case TokenListAction(TokenList.Action)
         case TokenEntryFormAction(TokenEntryForm.Action)
         case TokenEditFormAction(TokenEditForm.Action)
@@ -90,6 +92,10 @@ extension Root {
     @warn_unused_result
     mutating func update(action: Action) -> Effect? {
         switch action {
+        case .UpdateTokenList(let persistentTokens):
+            let action: TokenList.Action = .UpdateTokenList(persistentTokens)
+            return handleTokenListAction(action)
+
         case .TokenListAction(let action):
             return handleTokenListAction(action)
         case .TokenEntryFormAction(let action):
@@ -206,10 +212,5 @@ extension Root {
             modal = .None
             return .AddToken(token)
         }
-    }
-
-    mutating func updateWithPersistentTokens(persistentTokens: [PersistentToken]) -> Effect? {
-        let action: TokenList.Action = .UpdateTokenList(persistentTokens)
-        return handleTokenListAction(action)
     }
 }
