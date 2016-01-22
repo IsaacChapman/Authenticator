@@ -72,7 +72,7 @@ extension Root {
 
 extension Root {
     enum Action {
-        case UpdateTokenList([PersistentToken])
+        case DataChange([PersistentToken])
 
         case TokenListAction(TokenList.Action)
         case TokenEntryFormAction(TokenEntryForm.Action)
@@ -92,8 +92,8 @@ extension Root {
     @warn_unused_result
     mutating func update(action: Action) -> Effect? {
         switch action {
-        case .UpdateTokenList(let persistentTokens):
-            let action: TokenList.Action = .UpdateTokenList(persistentTokens)
+        case .DataChange(let persistentTokens):
+            let action: TokenList.Action = .DataChange(persistentTokens)
             return handleTokenListAction(action)
 
         case .TokenListAction(let action):

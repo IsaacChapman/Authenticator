@@ -63,7 +63,7 @@ struct TokenList: Component {
 
 extension TokenList {
     enum Action: Equatable {
-        case UpdateTokenList([PersistentToken])
+        case DataChange([PersistentToken])
 
         case BeginAddToken
         case EditPersistentToken(PersistentToken)
@@ -92,7 +92,7 @@ extension TokenList {
         resetEphemera()
 
         switch action {
-        case .UpdateTokenList(let persistentTokens):
+        case .DataChange(let persistentTokens):
             self.persistentTokens = persistentTokens
             return nil
 
@@ -134,8 +134,8 @@ extension TokenList {
 
 func == (lhs: TokenList.Action, rhs: TokenList.Action) -> Bool {
     switch lhs {
-    case let .UpdateTokenList(l):
-        if case let .UpdateTokenList(r) = rhs {
+    case let .DataChange(l):
+        if case let .DataChange(r) = rhs {
             return l == r
         }
     case .BeginAddToken:

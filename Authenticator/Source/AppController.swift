@@ -74,7 +74,7 @@ class AppController {
             store.deletePersistentToken(persistentToken)
         }
         // Send an additional action to the root component with the updated data from the store
-        let updateAction: Root.Action = .UpdateTokenList(store.persistentTokens)
+        let updateAction: Root.Action = .DataChange(store.persistentTokens)
         handleAction(updateAction)
     }
 
