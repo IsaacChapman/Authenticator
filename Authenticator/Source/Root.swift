@@ -92,33 +92,13 @@ extension Root {
         switch action {
         case .TokenListAction(let action):
             return handleTokenListAction(action)
-
         case .TokenEntryFormAction(let action):
-            if case .EntryForm(let form) = modal {
-                var newForm = form
-                let effect = newForm.update(action)
-                modal = .EntryForm(newForm)
-                // Handle the resulting action after committing the changes of the initial action
-                if let effect = effect {
-                    return handleTokenEntryEffect(effect)
-                }
-            }
-
+            return handleTokenEntryAction(action)
         case .TokenEditFormAction(let action):
-            if case .EditForm(let form) = modal {
-                var newForm = form
-                let effect = newForm.update(action)
-                modal = .EditForm(newForm)
-                // Handle the resulting effect after committing the changes of the initial action
-                if let effect = effect {
-                    return handleTokenEditEffect(effect)
-                }
-            }
-
+            return handleTokenEditAction(action)
         case .TokenScannerEffect(let effect):
             return handleTokenScannerEffect(effect)
         }
-        return nil
     }
 
     @warn_unused_result
@@ -126,9 +106,8 @@ extension Root {
         let effect = tokenList.update(action)
         if let effect = effect {
             return handleTokenListEffect(effect)
-        } else {
-            return nil
         }
+        return nil
     }
 
     @warn_unused_result
@@ -159,6 +138,20 @@ extension Root {
     }
 
     @warn_unused_result
+    private mutating func handleTokenEntryAction(action: TokenEntryForm.Action) -> Effect? {
+        if case .EntryForm(let form) = modal {
+            var newForm = form
+            let effect = newForm.update(action)
+            modal = .EntryForm(newForm)
+            // Handle the resulting action after committing the changes of the initial action
+            if let effect = effect {
+                return handleTokenEntryEffect(effect)
+            }
+        }
+        return nil
+    }
+
+    @warn_unused_result
     private mutating func handleTokenEntryEffect(effect: TokenEntryForm.Effect) -> Effect? {
         switch effect {
         case .Cancel:
@@ -169,6 +162,20 @@ extension Root {
             modal = .None
             return .AddToken(token)
         }
+    }
+
+    @warn_unused_result
+    private mutating func handleTokenEditAction(action: TokenEditForm.Action) -> Effect? {
+        if case .EditForm(let form) = modal {
+            var newForm = form
+            let effect = newForm.update(action)
+            modal = .EditForm(newForm)
+            // Handle the resulting effect after committing the changes of the initial action
+            if let effect = effect {
+                return handleTokenEditEffect(effect)
+            }
+        }
+        return nil
     }
 
     @warn_unused_result
